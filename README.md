@@ -26,15 +26,15 @@ The goals / steps of this project are the following:
 ###Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
 
 ---
-###Writeup / README
+### Writeup / README
 
-####1. Provide a Writeup / README that includes all the rubric points and how you addressed each one.  You can submit your writeup as markdown or pdf.  [Here](https://github.com/udacity/CarND-Advanced-Lane-Lines/blob/master/writeup_template.md) is a template writeup for this project you can use as a guide and a starting point.  
+#### 1. Provide a Writeup / README that includes all the rubric points and how you addressed each one.  You can submit your writeup as markdown or pdf.  [Here](https://github.com/udacity/CarND-Advanced-Lane-Lines/blob/master/writeup_template.md) is a template writeup for this project you can use as a guide and a starting point.  
 
 You're reading it! Note that below I will refer to the different code cells in my IPython notebook where I have made each part separately. The pipeline was later on summarized as functions, which can be seen in code cells 17-18 and 21-25. If you only want to run the pipeline these cells and the 1st cell needs to be run (note that this assumes that you have saved the calibration file).
 
-###Camera Calibration
+### Camera Calibration
 
-####1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
+#### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
 
 The code for this step is contained in the second and third code cell of the IPython notebook located in "AdvancedLaneLines.ipynb".
 
@@ -44,12 +44,12 @@ In the third code cell I then used the output `objpoints` and `imgpoints` to com
 
 ![alt text][image1]
 
-###Pipeline (single images)
+### Pipeline (single images)
 
-####1. Provide an example of a distortion-corrected image.
+#### 1. Provide an example of a distortion-corrected image.
 This step can be seen in code cell 4 of my notebook. In this step, I applied the distortion correction (saved from camera calibration) to one of the test images like this one:
 ![alt text][image2]
-####2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
+#### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 In code cell 5 and 6 I used a combination of color and gradient thresholds to generate a binary image. In my final approach I used the pixels which were both present in sobel x and y for the S channel of a HLS image combined with the pixels which were both present in sobel x and y for the R channel in a RGB image. Here's an example of my output for this step, containing other methods as well. What I found was that these were the thresholdings which worked for most of the images, but I could probably experiment more with the values.  (note: this is not actually from one of the test images)
 
 ![alt text][image3]
@@ -58,7 +58,7 @@ Additionally I was cropping the image to filter away parts that will not be lane
 
 ![alt text][image_cut]
 
-####3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
+#### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
 In the 9th code cell of my IPython notebook I used the the thresholded and cropped image and computed the perspective transform using the `cv2.getPerspectiveTransform()` function. I hardcoded the source (`src`) by defining them on the lane markings in the undistorted straight lines images and the destination (`dst`) points by centering around the middle of the image. The following were used:
 
@@ -73,14 +73,14 @@ I verified that my perspective transform was working as expected by drawing the 
 
 ![alt text][image4]
 
-####4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial.
+#### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial.
 
 By using a histogram of the sum of column pixel values I was able to find the starting points of the lane lines, as seen in code cell 10 of my notebook. Thereafter I used a sliding window to find the rest of the lane markings. A second order polynomial were then fitted to all the found lane marking points (one for left and another for right).
 
 If I had already found the lane markings equations in an earlier image I used this knowledge to not need to search through the whole image again. Instead I searched close to the earlier function predictions, as seen in code cell 12 (This can be seen better in the final pipeline in cell 18 and 23). Here is an example of the output:
 ![alt text][image5]
 
-####5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
+#### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
 The vehicle position was calculated based on the offset of the lane markings to the middle of the camera image (we assume that the camera is placed in the middle of the vehicle). This can be seen in code cell 14 of my notebook.
 
@@ -88,7 +88,7 @@ The curvature was calculated for each lane marking (left and right) based on an 
 
 Conversion from pixels to meters was also made for both cases, which is defined based on pixel values in the warped (transformed) image and the assumption that the lane width is 3,7m and that we are predicting 30m ahead.
 
-####6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
+#### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
 I implemented this step in code cell 16. Here is an example of my result on a test image:
 
@@ -96,17 +96,17 @@ I implemented this step in code cell 16. Here is an example of my result on a te
 
 ---
 
-###Pipeline (video)
+### Pipeline (video)
 
-####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
+#### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
 Here's a [link to my video result](./project_video.mp4)
 
 ---
 
-###Discussion
+### Discussion
 
-####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
+#### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
 Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.
 
